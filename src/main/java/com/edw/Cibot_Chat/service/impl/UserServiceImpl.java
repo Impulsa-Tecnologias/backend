@@ -5,11 +5,11 @@ import java.util.Arrays;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.edw.Cibot_Chat.dto.CreateUserRequest;
-import com.edw.Cibot_Chat.dto.UpdateUserRequest;
-import com.edw.Cibot_Chat.dto.UserResponse;
-import com.edw.Cibot_Chat.entity.Rol;
+import com.edw.Cibot_Chat.dto.request.CreateUserRequest;
+import com.edw.Cibot_Chat.dto.request.UpdateUserRequest;
+import com.edw.Cibot_Chat.dto.response.UserResponse;
 import com.edw.Cibot_Chat.entity.User;
+import com.edw.Cibot_Chat.enums.Rol;
 import com.edw.Cibot_Chat.exception.ResourceNotFoundException;
 import com.edw.Cibot_Chat.repository.UserRepository;
 import com.edw.Cibot_Chat.service.UserService;

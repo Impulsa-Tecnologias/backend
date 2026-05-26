@@ -2,6 +2,9 @@ package com.edw.Cibot_Chat.entity;
 
 import java.time.Instant;
 
+import com.edw.Cibot_Chat.enums.KitchenLevel;
+import com.edw.Cibot_Chat.enums.Rol;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

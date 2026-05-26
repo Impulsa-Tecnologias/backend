@@ -1,4 +1,4 @@
-package com.edw.Cibot_Chat.entity;
+package com.edw.Cibot_Chat.enums;
 
 public enum Rol{
     FINAL,

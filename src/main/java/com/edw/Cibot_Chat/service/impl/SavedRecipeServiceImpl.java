@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.edw.Cibot_Chat.dto.CreateSavedRecipeRequest;
-import com.edw.Cibot_Chat.dto.SavedRecipeResponse;
+import com.edw.Cibot_Chat.dto.request.CreateSavedRecipeRequest;
+import com.edw.Cibot_Chat.dto.response.SavedRecipeResponse;
 import com.edw.Cibot_Chat.entity.SavedRecipe;
 import com.edw.Cibot_Chat.exception.ResourceNotFoundException;
 import com.edw.Cibot_Chat.repository.SavedRecipeRepository;

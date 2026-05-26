@@ -2,8 +2,8 @@ package com.edw.Cibot_Chat.service;
 
 import java.util.List;
 
-import com.edw.Cibot_Chat.dto.CreateSavedRecipeRequest;
-import com.edw.Cibot_Chat.dto.SavedRecipeResponse;
+import com.edw.Cibot_Chat.dto.request.CreateSavedRecipeRequest;
+import com.edw.Cibot_Chat.dto.response.SavedRecipeResponse;
 
 public interface SavedRecipeService {
     

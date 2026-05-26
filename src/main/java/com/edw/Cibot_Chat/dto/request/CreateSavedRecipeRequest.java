@@ -1,4 +1,4 @@
-package com.edw.Cibot_Chat.dto;
+package com.edw.Cibot_Chat.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

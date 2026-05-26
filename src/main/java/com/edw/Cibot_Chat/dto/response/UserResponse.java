@@ -1,9 +1,9 @@
-package com.edw.Cibot_Chat.dto;
+package com.edw.Cibot_Chat.dto.response;
 
 import java.time.Instant;
 
-import com.edw.Cibot_Chat.entity.KitchenLevel;
-import com.edw.Cibot_Chat.entity.Rol;
+import com.edw.Cibot_Chat.enums.KitchenLevel;
+import com.edw.Cibot_Chat.enums.Rol;
 
 import lombok.Getter;
 import lombok.Setter;

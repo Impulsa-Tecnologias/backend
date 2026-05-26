@@ -1,7 +1,7 @@
-package com.edw.Cibot_Chat.dto;
+package com.edw.Cibot_Chat.dto.request;
 
-import com.edw.Cibot_Chat.entity.KitchenLevel;
-import com.edw.Cibot_Chat.entity.Rol;
+import com.edw.Cibot_Chat.enums.KitchenLevel;
+import com.edw.Cibot_Chat.enums.Rol;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

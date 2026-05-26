@@ -1,4 +1,4 @@
-package com.edw.Cibot_Chat.dto;
+package com.edw.Cibot_Chat.dto.response;
 
 import java.time.Instant;
 

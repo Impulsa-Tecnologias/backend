@@ -2,9 +2,9 @@ package com.edw.Cibot_Chat.service;
 
 import java.util.List;
 
-import com.edw.Cibot_Chat.dto.CreateUserRequest;
-import com.edw.Cibot_Chat.dto.UpdateUserRequest;
-import com.edw.Cibot_Chat.dto.UserResponse;
+import com.edw.Cibot_Chat.dto.request.CreateUserRequest;
+import com.edw.Cibot_Chat.dto.request.UpdateUserRequest;
+import com.edw.Cibot_Chat.dto.response.UserResponse;
 
 public interface UserService {
 

@@ -10,7 +10,7 @@ public interface ChatService {
 
     ChatResponse create(ChatRequest request, Long userId);
 
-    ChatResponse update(UpdateChatRequest request, Long userId);
+    ChatResponse update(UpdateChatRequest request, Long userId, Long chatId);
 
     List<ChatResponse> findAllByUser(Long userId);
 

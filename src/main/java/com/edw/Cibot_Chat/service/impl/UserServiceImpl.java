@@ -3,6 +3,7 @@ package com.edw.Cibot_Chat.service.impl;
 import java.util.List;
 import java.util.Arrays;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,14 @@ import com.edw.Cibot_Chat.exception.ResourceNotFoundException;
 import com.edw.Cibot_Chat.repository.UserRepository;
 import com.edw.Cibot_Chat.service.UserService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
     private final UserRepository repository;
-    public UserServiceImpl(UserRepository repository){
-        this.repository = repository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -30,7 +32,7 @@ public class UserServiceImpl implements UserService{
 
         us.setRol(request.getRol());
         us.setEmail(request.getEmail());
-        us.setPassword(request.getPassword());
+        us.setPassword(passwordEncoder.encode(request.getPassword()));
         us.setAllergy(request.getAllergy());
         us.setKitchenLevel(request.getKitchenLevel());
 
@@ -67,15 +69,16 @@ public class UserServiceImpl implements UserService{
         User us = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User " + id + " not Found"));
         
-        if (request.getPassword() != null) {
-            us.setPassword(request.getPassword());
+        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+            us.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        if (request.getAllergy() != null || request.getAllergy().trim() == "") {
-            if (request.getAllergy().trim() == "") {
+        if (request.getAllergy() != null) {
+            if (request.getAllergy().trim().isEmpty()) {
                 us.setAllergy(null);
+            }else{
+                us.setAllergy(request.getAllergy());
             }
-            us.setAllergy(request.getAllergy());
         }
 
         if (request.getKitchenLevel() != null) {
@@ -101,7 +104,6 @@ public class UserServiceImpl implements UserService{
         r.setId(us.getId());
         r.setRol(us.getRol());
         r.setEmail(us.getEmail());
-        r.setPassword(us.getPassword());
         r.setAllergy(us.getAllergy());
         r.setKitchenLevel(us.getKitchenLevel());
         r.setCreatedAt(us.getCreatedAt());

@@ -49,9 +49,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public ChatResponse update(UpdateChatRequest request, Long id){
-        Chat chat = chatRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Chat " + id + " not Found"));
+    public ChatResponse update(UpdateChatRequest request, Long chatId, Long userId){
+        Chat chat = getChatOwnedByUser(chatId, userId);
 
         chat.setName(request.getName());
 
@@ -92,6 +91,7 @@ public class ChatServiceImpl implements ChatService {
                 .name(chat.getName())
                 .foodObjective(chat.getFoodObjective())
                 .createdAt(chat.getCreatedAt())
+                .updateTime(chat.getUpdateTime())
                 .build();
     }
 }

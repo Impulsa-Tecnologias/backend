@@ -15,7 +15,6 @@ public class UserResponse {
     private Long id;
     private Rol rol;
     private String email;
-    private String password;
     private String allergy;
     private KitchenLevel kitchenLevel;
     private Instant createdAt;

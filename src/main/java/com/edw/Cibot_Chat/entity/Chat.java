@@ -38,9 +38,18 @@ public class Chat {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "update_at")
+    private LocalDateTime updateTime;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updateTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateTime = LocalDateTime.now();
     }
 
     @PreRemove

@@ -16,6 +16,14 @@ public class SavedRecipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "chat_id", nullable = true)
+    private Chat chat;
+
     @Column(nullable = false, length = 255, updatable = false)
     private String recipeTitle;
 
@@ -26,7 +34,7 @@ public class SavedRecipe {
     private Instant createdAt;
 
     @PrePersist
-    void onCreate() {
+    protected void onCreate() {
         Instant now = Instant.now();
         this.createdAt = now;
     }

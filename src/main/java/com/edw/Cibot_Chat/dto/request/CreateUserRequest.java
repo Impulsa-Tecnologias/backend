@@ -4,6 +4,7 @@ import com.edw.Cibot_Chat.enums.KitchenLevel;
 import com.edw.Cibot_Chat.enums.Rol;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +13,7 @@ import lombok.Setter;
 @Setter
 public class CreateUserRequest {
 
-    @NotBlank(message = "Rol is requerid")
-    private Rol rol;
+    private Rol rol = Rol.FINAL;
 
     @NotBlank(message = "Email is requerid")
     @Size(max = 255, message = "Email must be <= 255")
@@ -23,7 +23,9 @@ public class CreateUserRequest {
     @Size(max = 255, message = "password must be <= 255")
     private String password;
 
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$", message = "Allergies can only contain letters")
     private String allergy;
+    
     private KitchenLevel kitchenLevel = KitchenLevel.NULL;
     
 }

@@ -5,7 +5,6 @@ import com.edw.Cibot_Chat.dto.request.MessageRequest;
 import com.edw.Cibot_Chat.dto.response.ApiResponse;
 import com.edw.Cibot_Chat.dto.response.ChatResponse;
 import com.edw.Cibot_Chat.dto.response.MessageResponse;
-import com.edw.Cibot_Chat.dto.response.SendMessageResponse;
 import com.edw.Cibot_Chat.service.ChatService;
 import com.edw.Cibot_Chat.service.MessageService;
 import jakarta.validation.Valid;

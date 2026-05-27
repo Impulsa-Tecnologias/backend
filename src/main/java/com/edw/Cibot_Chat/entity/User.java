@@ -1,6 +1,7 @@
 package com.edw.Cibot_Chat.entity;
 
 import java.time.Instant;
+import java.util.List;
 
 import com.edw.Cibot_Chat.enums.KitchenLevel;
 import com.edw.Cibot_Chat.enums.Rol;
@@ -27,11 +28,17 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column()
+    @Column(columnDefinition = "TEXT")
     private String allergy;
 
     @Column(nullable = false)
     private KitchenLevel kitchenLevel;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SavedRecipe> recipes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Chat> chats;
 
     @Column(nullable = false, name = "created_at", updatable = false)
     private Instant createdAt;
@@ -40,14 +47,14 @@ public class User {
     private Instant updateAt;
 
     @PrePersist
-    void onCreated() {
+    protected void onCreated() {
         Instant now = Instant.now();
         this.createdAt = now;
         this.updateAt = now;
     }
 
     @PrePersist
-    void onUpdate() {
+    protected void onUpdate() {
         this.updateAt = Instant.now();
     }
 

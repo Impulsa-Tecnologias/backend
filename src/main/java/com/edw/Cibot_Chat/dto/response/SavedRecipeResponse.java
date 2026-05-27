@@ -10,6 +10,8 @@ import lombok.Setter;
 public class SavedRecipeResponse {
     
     private Long id;
+    private Long userId;
+    private Long chatId;
     private String recipeTitle;
     private String recipeContent;
     private Instant createdAt;

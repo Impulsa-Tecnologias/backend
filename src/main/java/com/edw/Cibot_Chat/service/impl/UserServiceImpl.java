@@ -3,6 +3,7 @@ package com.edw.Cibot_Chat.service.impl;
 import java.util.List;
 import java.util.Arrays;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.edw.Cibot_Chat.dto.request.CreateUserRequest;
@@ -14,6 +15,7 @@ import com.edw.Cibot_Chat.exception.ResourceNotFoundException;
 import com.edw.Cibot_Chat.repository.UserRepository;
 import com.edw.Cibot_Chat.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService{
 
     private final UserRepository repository;
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserResponse created(CreateUserRequest request){
         User us = new User();
 
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserResponse update(Long id, UpdateUserRequest request){
         User us = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User " + id + " not Found"));
@@ -67,8 +71,8 @@ public class UserServiceImpl implements UserService{
             us.setPassword(request.getPassword());
         }
 
-        if (request.getAllergy() != null || request.getAllergy() == "") {
-            if (request.getAllergy() == "") {
+        if (request.getAllergy() != null || request.getAllergy().trim() == "") {
+            if (request.getAllergy().trim() == "") {
                 us.setAllergy(null);
             }
             us.setAllergy(request.getAllergy());
@@ -82,6 +86,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void delete(Long id){
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("User " + id + " not found");
@@ -94,6 +99,7 @@ public class UserServiceImpl implements UserService{
         UserResponse r = new UserResponse();
 
         r.setId(us.getId());
+        r.setRol(us.getRol());
         r.setEmail(us.getEmail());
         r.setPassword(us.getPassword());
         r.setAllergy(us.getAllergy());

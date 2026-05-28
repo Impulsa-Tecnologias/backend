@@ -2,7 +2,6 @@ package com.edw.Cibot_Chat.service.impl;
 
 import com.edw.Cibot_Chat.dto.request.MessageRequest;
 import com.edw.Cibot_Chat.dto.response.MessageResponse;
-import com.edw.Cibot_Chat.dto.response.SendMessageResponse;
 import com.edw.Cibot_Chat.entity.Chat;
 import com.edw.Cibot_Chat.entity.Message;
 import com.edw.Cibot_Chat.enums.MessageSender;
@@ -22,41 +21,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
-    private static final String BOT_PLACEHOLDER =
-            "Respuesta del bot pendiente de integración con el servicio de IA.";
-
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
 
     @Override
     @Transactional
-    public SendMessageResponse sendMessage(Long chatId, MessageRequest request, Long userId) {
+    public MessageResponse sendMessage(Long chatId, MessageRequest request, Long userId) {
         Chat chat = getChatOwnedByUser(chatId, userId);
 
-        Message userMessage = Message.builder()
+        Message message = Message.builder()
                 .chat(chat)
                 .sender(MessageSender.USUARIO)
-                .content(request.getContent().trim())
+                .content(request.getContent())
                 .build();
 
-        Message botMessage = Message.builder()
+        messageRepository.save(message);
+
+        // Metodo API 
+
+        String botResponseText = "¡Hola! He analizado tu objetivo de " + chat.getFoodObjective() + 
+                                 " y esta es mi recomendación...";
+
+        Message boot = Message.builder()
                 .chat(chat)
                 .sender(MessageSender.BOT)
-                .content(BOT_PLACEHOLDER)
+                .content(botResponseText)
                 .build();
 
-        userMessage = messageRepository.save(userMessage);
-        botMessage = messageRepository.save(botMessage);
+        Message save = messageRepository.save(boot);
 
-        return SendMessageResponse.builder()
-                .userMessage(mapToResponse(userMessage))
-                .botMessage(mapToResponse(botMessage))
-                .build();
+        return mapToResponse(save);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<MessageResponse> findByChat(Long chatId, Long userId) {
+    public List<MessageResponse> listAllMessageByChat(Long chatId, Long userId) {
         getChatOwnedByUser(chatId, userId);
         return messageRepository.findByChat_IdOrderBySendDateAsc(chatId).stream()
                 .map(this::mapToResponse)
@@ -65,11 +64,12 @@ public class MessageServiceImpl implements MessageService {
 
     private Chat getChatOwnedByUser(Long chatId, Long userId) {
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new ResourceNotFoundException("Chat no encontrado con id: " + chatId));
-
-        if (!chat.getUserId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este chat");
+                .orElseThrow(() -> new ResourceNotFoundException("Chat " + chatId + " not found"));
+        
+        if (!chat.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access not allowed");
         }
+
         return chat;
     }
 

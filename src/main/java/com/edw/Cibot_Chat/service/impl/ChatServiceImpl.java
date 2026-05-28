@@ -1,16 +1,18 @@
 package com.edw.Cibot_Chat.service.impl;
 
 import com.edw.Cibot_Chat.dto.request.ChatRequest;
+import com.edw.Cibot_Chat.dto.request.UpdateChatRequest;
 import com.edw.Cibot_Chat.dto.response.ChatResponse;
 import com.edw.Cibot_Chat.entity.Chat;
+import com.edw.Cibot_Chat.entity.User;
 import com.edw.Cibot_Chat.exception.ResourceNotFoundException;
 import com.edw.Cibot_Chat.repository.ChatRepository;
+import com.edw.Cibot_Chat.repository.UserRepository;
 import com.edw.Cibot_Chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -22,25 +24,38 @@ public class ChatServiceImpl implements ChatService {
     private static final int MAX_CHATS_PER_USER = 10;
 
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public ChatResponse create(ChatRequest request, Long userId) {
+        User us = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
+
         if (chatRepository.countByUserId(userId) >= MAX_CHATS_PER_USER) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Has alcanzado el máximo de " + MAX_CHATS_PER_USER + " chats permitidos");
         }
 
-        String name = StringUtils.hasText(request.getName()) ? request.getName().trim() : "Nuevo chat";
-
         Chat chat = Chat.builder()
-                .userId(userId)
-                .name(name)
+                .user(us)
+                .name(request.getName())
                 .foodObjective(request.getFoodObjective().trim())
                 .build();
 
         return mapToResponse(chatRepository.save(chat));
+    }
+
+    @Override
+    @Transactional
+    public ChatResponse update(UpdateChatRequest request, Long chatId, Long userId){
+        Chat chat = getChatOwnedByUser(chatId, userId);
+
+        chat.setName(request.getName());
+
+        return mapToResponse(chat);
+
     }
 
     @Override
@@ -60,21 +75,23 @@ public class ChatServiceImpl implements ChatService {
 
     private Chat getChatOwnedByUser(Long chatId, Long userId) {
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new ResourceNotFoundException("Chat no encontrado con id: " + chatId));
-
-        if (!chat.getUserId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este chat");
+                .orElseThrow(() -> new ResourceNotFoundException("Chat " + chatId + " not found"));
+        
+        if (!chat.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access not allowed");
         }
+
         return chat;
     }
 
     private ChatResponse mapToResponse(Chat chat) {
         return ChatResponse.builder()
                 .id(chat.getId())
-                .userId(chat.getUserId())
+                .userId(chat.getUser().getId())
                 .name(chat.getName())
                 .foodObjective(chat.getFoodObjective())
                 .createdAt(chat.getCreatedAt())
+                .updateTime(chat.getUpdateTime())
                 .build();
     }
 }

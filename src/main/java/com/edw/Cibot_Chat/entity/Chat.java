@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,25 +19,46 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, length = 100)
-    @Builder.Default
-    private String name = "Nuevo chat";
+    private String name;
 
     @Column(name = "food_objective", nullable = false, columnDefinition = "TEXT")
     private String foodObjective;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages;
+
+    @OneToMany(mappedBy = "chat")
+    private List<SavedRecipe> recipes;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "update_at")
+    private LocalDateTime updateTime;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updateTime = LocalDateTime.now();
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateTime = LocalDateTime.now();
+    }
+
+    @PreRemove
+    protected void preRemove(){
+        if (recipes != null) {
+            for (SavedRecipe rc : recipes){
+                rc.setChat(null);
+            }
+        }
+    }
+    
 }

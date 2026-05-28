@@ -39,7 +39,7 @@ public class User implements UserDetails{
     private String allergy;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "kitchen_level")
     private KitchenLevel kitchenLevel;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

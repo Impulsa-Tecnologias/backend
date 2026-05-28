@@ -27,7 +27,7 @@ public class SavedRecipe {
     @Column(nullable = false, length = 255, updatable = false)
     private String recipeTitle;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "TEXT")
     private String recipeContent;
 
     @Column(nullable = false, updatable = false)

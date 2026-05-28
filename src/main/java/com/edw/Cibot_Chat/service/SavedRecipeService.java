@@ -7,9 +7,9 @@ import com.edw.Cibot_Chat.dto.response.SavedRecipeResponse;
 
 public interface SavedRecipeService {
     
-    SavedRecipeResponse create(CreateSavedRecipeRequest request);
-    List<SavedRecipeResponse> list();
-    SavedRecipeResponse getById(Long id);
-    void delete(Long id);
+    SavedRecipeResponse create(CreateSavedRecipeRequest request, Long userId, Long chatId);
+    List<SavedRecipeResponse> list(Long userId);
+    SavedRecipeResponse getById(Long id, Long userId);
+    void delete(Long id, Long userId);
 
 }

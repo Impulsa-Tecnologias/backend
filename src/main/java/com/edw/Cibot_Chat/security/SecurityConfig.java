@@ -49,14 +49,16 @@ public class SecurityConfig {
             
             // 2. Control de acceso a las rutas (Públicas vs Privadas)
             .authorizeHttpRequests(auth -> auth
-                // Rutas públicas: Autenticación y registro
+                // Rutas públicas: Autenticación
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 
-                // Restricciones opcionales por rol directas
-                .requestMatchers(HttpMethod.POST, "/api/v1/users/admin").hasAuthority("MASTER")
-                .requestMatchers("/api/v1/dashboard/**").hasAnyAuthority("ADMIN", "MASTER")
+                // Excepción para Usuarios Finales
+                .requestMatchers(HttpMethod.PUT, "/api/v1/users/profile").authenticated()
                 
-                // Cualquier otra petición requiere autenticación
+                // Restricciones de Gestión
+                .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "MASTER")
+                
+                // El resto de la API
                 .anyRequest().authenticated()
             )
             

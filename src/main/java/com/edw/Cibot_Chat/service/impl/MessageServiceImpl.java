@@ -24,6 +24,8 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
 
+    private final OpenRouterService openRouterService;
+
     @Override
     @Transactional
     public MessageResponse sendMessage(Long chatId, MessageRequest request, Long userId) {
@@ -37,15 +39,14 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.save(message);
 
-        // Metodo API 
+        List<Message> history = messageRepository.findByChat_IdOrderBySendDateAsc(chatId);
 
-        String botResponseText = "¡Hola! He analizado tu objetivo de " + chat.getFoodObjective() + 
-                                 " y esta es mi recomendación...";
+        String botResponse = openRouterService.getChatCompletion(chat.getUser(), chat, history);
 
         Message boot = Message.builder()
                 .chat(chat)
                 .sender(MessageSender.BOT)
-                .content(botResponseText)
+                .content(botResponse)
                 .build();
 
         Message save = messageRepository.save(boot);

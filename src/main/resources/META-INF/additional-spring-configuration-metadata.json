@@ -8,5 +8,20 @@
     "name": "jwt.expiration-ms",
     "type": "java.lang.String",
     "description": "A description for 'jwt.expiration-ms'"
+  },
+  {
+    "name": "openrouter.api.url",
+    "type": "java.lang.String",
+    "description": "A description for 'openrouter.api.url'"
+  },
+  {
+    "name": "openrouter.api.model",
+    "type": "java.lang.String",
+    "description": "A description for 'openrouter.api.model'"
+  },
+  {
+    "name": "openrouter.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'openrouter.api.key'"
   }
 ]}

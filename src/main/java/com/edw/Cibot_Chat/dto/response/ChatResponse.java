@@ -18,4 +18,6 @@ public class ChatResponse {
     private String name;
     private String foodObjective;
     private LocalDateTime createdAt;
+    private LocalDateTime updateTime;
+    
 }

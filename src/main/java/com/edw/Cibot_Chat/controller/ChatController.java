@@ -2,10 +2,10 @@ package com.edw.Cibot_Chat.controller;
 
 import com.edw.Cibot_Chat.dto.request.ChatRequest;
 import com.edw.Cibot_Chat.dto.request.MessageRequest;
-import com.edw.Cibot_Chat.dto.response.ApiResponse;
+import com.edw.Cibot_Chat.dto.request.UpdateChatRequest;
 import com.edw.Cibot_Chat.dto.response.ChatResponse;
 import com.edw.Cibot_Chat.dto.response.MessageResponse;
-import com.edw.Cibot_Chat.dto.response.SendMessageResponse;
+import com.edw.Cibot_Chat.entity.User;
 import com.edw.Cibot_Chat.service.ChatService;
 import com.edw.Cibot_Chat.service.MessageService;
 import jakarta.validation.Valid;
@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,60 +25,64 @@ public class ChatController {
     private final ChatService chatService;
     private final MessageService messageService;
 
+    // POST /api/v1/chats
     @PostMapping
-    public ResponseEntity<ApiResponse<ChatResponse>> create(
+    public ResponseEntity<ChatResponse> create(
             @Valid @RequestBody ChatRequest request,
-            @AuthenticationPrincipal UserDetails currentUser) {
+            @AuthenticationPrincipal User actor) {
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Chat creado exitosamente",
-                        chatService.create(request, resolveUserId(currentUser))));
+                .body(chatService.create(request, actor.getId()));
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<ChatResponse>>> findAll(
-            @AuthenticationPrincipal UserDetails currentUser) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                chatService.findAllByUser(resolveUserId(currentUser))));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(
+    // PUT /api/v1/chats/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<ChatResponse> updateChat(
             @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails currentUser) {
-        chatService.delete(id, resolveUserId(currentUser));
-        return ResponseEntity.ok(ApiResponse.ok("Chat eliminado", null));
+            @Valid @RequestBody UpdateChatRequest request,
+            @AuthenticationPrincipal User actor) {
+        
+        return ResponseEntity.ok(chatService.update(request, id, actor.getId()));
     }
 
+    // GET /api/v1/chats
+    @GetMapping
+    public ResponseEntity<List<ChatResponse>> findAll(
+            @AuthenticationPrincipal User actor) {
+
+        return ResponseEntity.ok(chatService.findAllByUser(actor.getId()));
+    }
+
+    // DELETE /api/v1/chats/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User actor) {
+
+        chatService.delete(id, actor.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    // Mensajes
+
+    // POST /api/v1/chats/{id}/messages
     @PostMapping("/{id}/messages")
-    public ResponseEntity<ApiResponse<SendMessageResponse>> sendMessage(
+    public ResponseEntity<MessageResponse> sendMessage(
             @PathVariable Long id,
             @Valid @RequestBody MessageRequest request,
-            @AuthenticationPrincipal UserDetails currentUser) {
+            @AuthenticationPrincipal User actor) {
+
+        // Retorna la respuesta del BOT generada en el servicio
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Mensaje enviado",
-                        messageService.sendMessage(id, request, resolveUserId(currentUser))));
+                .body(messageService.sendMessage(id, request, actor.getId()));
     }
 
+    // GET /api/v1/chats/{id}/messages
     @GetMapping("/{id}/messages")
-    public ResponseEntity<ApiResponse<List<MessageResponse>>> findMessages(
+    public ResponseEntity<List<MessageResponse>> findMessages(
             @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails currentUser) {
-        return ResponseEntity.ok(ApiResponse.ok(
-                messageService.findByChat(id, resolveUserId(currentUser))));
-    }
+            @AuthenticationPrincipal User actor) {
 
-    /**
-     * El subject del JWT debe ser el id del usuario como String.
-     * Se ajustará cuando exista el módulo de autenticación con UserRepository.
-     */
-    private Long resolveUserId(UserDetails currentUser) {
-        if (currentUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
-        }
-        try {
-            return Long.parseLong(currentUser.getUsername());
-        } catch (NumberFormatException ex) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identificador de usuario inválido");
-        }
+        return ResponseEntity.ok(messageService.listAllMessageByChat(id, actor.getId()));
     }
 }

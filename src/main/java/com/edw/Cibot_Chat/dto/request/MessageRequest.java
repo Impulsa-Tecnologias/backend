@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class MessageRequest {
-
-    @NotBlank(message = "El contenido del mensaje es obligatorio")
+    
+    @NotBlank(message = "Content is required")
     private String content;
+
 }

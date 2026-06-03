@@ -74,6 +74,8 @@ public class AuthServiceImpl implements AuthService{
         response.setToken(jwtToken);
         response.setEmail(user.getEmail());
         response.setRol(user.getRol().name());
+        response.setAllergy(user.getAllergy());
+        response.setKitchenLevel(user.getKitchenLevel());
 
         return response;
     }

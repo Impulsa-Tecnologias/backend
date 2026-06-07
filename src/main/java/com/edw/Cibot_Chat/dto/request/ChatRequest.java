@@ -12,6 +12,6 @@ public class ChatRequest {
     private String name = "Nuevo Chat";
 
     @NotBlank(message = "Objective is required")
-    @Pattern(regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$", message = "The target can only contain letters and numbers")
+    @Pattern(regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ,]+$", message = "The target can only contain letters and numbers")
     private String foodObjective;
 }

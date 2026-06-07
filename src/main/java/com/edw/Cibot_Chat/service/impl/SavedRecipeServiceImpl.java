@@ -1,6 +1,7 @@
 package com.edw.Cibot_Chat.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,22 +32,45 @@ public class SavedRecipeServiceImpl implements SavedRecipeService{
     @Override
     @Transactional
     public SavedRecipeResponse create(CreateSavedRecipeRequest request, Long userId, Long chatId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
+
+        Boolean exists = false;
+
+        if (chatId != null) {
+            exists = repository.existsByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(
+                userId, chatId, request.getRecipeTitle(), request.getRecipeContent());
+        }else{
+            exists = repository.existsByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(
+                userId, request.getRecipeTitle(), request.getRecipeContent()
+            );
+        }
+
+        if (exists) {
+            Optional<SavedRecipe> existingRecipe = (chatId != null) 
+                ? repository.findByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(
+                    userId, chatId, request.getRecipeTitle(), request.getRecipeContent())
+                : repository.findByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(
+                    userId, request.getRecipeTitle(), request.getRecipeContent()
+                );
+            
+            if (existingRecipe.isPresent()) {
+                return toResponse(existingRecipe.get());
+            }
+        }
+
         SavedRecipe sr = new SavedRecipe();
 
         sr.setRecipeTitle(request.getRecipeTitle());
         sr.setRecipeContent(request.getRecipeContent());
-
-        User us = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
-        
-        sr.setUser(us);
+        sr.setUser(user);
 
         if (chatId != null) {
             Chat chat = chatRepository.findById(chatId)
                     .orElseThrow(() -> new ResourceNotFoundException("Chat "+ chatId + " not found"));
 
             // Validamos que el chat le pertenezca a este usuario
-            if (!chat.getUser().getId().equals(us.getId())) {
+            if (!chat.getUser().getId().equals(user.getId())) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a este chat");
             }
             

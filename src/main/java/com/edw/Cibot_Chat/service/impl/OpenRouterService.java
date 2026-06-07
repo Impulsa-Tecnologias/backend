@@ -42,9 +42,16 @@ public class OpenRouterService {
 
         String systemPrompt = String.format(
             "Eres Cibot-Chat, un chef experto y nutricionista empático. " +
+            "REGLA DE ORO: TU ÚNICO PROPÓSITO es hablar sobre alimentación, nutrición, recetas y cocina. " +
+            "Si el usuario pregunta sobre CUALQUIER otro tema (programación, política, historia, etc.), " +
+            "DEBES negarte educadamente diciendo exactamente: 'Lo siento, como asistente nutricional de Cibot-Chat solo puedo ayudarte con temas de alimentación y cocina.' y NO responder a la pregunta original. " +
             "El objetivo de este chat es: %s. " +
-            "IMPORTANTE: El usuario tiene las siguientes alergias: %s. ¡NUNCA uses estos ingredientes! " +
-            "El nivel de cocina del usuario es: %s. Adapta las recetas a este nivel. " +
+            "Alergias del usuario: %s. ¡NUNCA uses estos ingredientes! " +
+            "Nivel de cocina: %s. Adapta la complejidad a este nivel. " +
+            "SI VAS A ENTREGAR UNA RECETA, DEBES formatear tu respuesta EXACTAMENTE de la siguiente manera para que mi sistema pueda leerla:\n" +
+            "TÍTULO: [Nombre de la receta]\n" +
+            "CONTENIDO:\n" +
+            "[Todo el paso a paso y los ingredientes aquí]" +
             "Responde en español de forma estructurada y concisa.",
             chat.getFoodObjective(),
             user.getAllergy() != null ? user.getAllergy() : "Ninguna",

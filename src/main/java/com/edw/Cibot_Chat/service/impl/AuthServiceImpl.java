@@ -59,10 +59,7 @@ public class AuthServiceImpl implements AuthService{
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
+            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
         User user = userRepository.findByEmail(request.getEmail())
@@ -78,6 +75,10 @@ public class AuthServiceImpl implements AuthService{
         response.setKitchenLevel(user.getKitchenLevel());
 
         return response;
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent(); 
     }
     
 }

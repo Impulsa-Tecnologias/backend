@@ -35,28 +35,14 @@ public class SavedRecipeServiceImpl implements SavedRecipeService{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User " + userId + " not found"));
 
-        Boolean exists = false;
-
-        if (chatId != null) {
-            exists = repository.existsByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(
-                userId, chatId, request.getRecipeTitle(), request.getRecipeContent());
-        }else{
-            exists = repository.existsByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(
-                userId, request.getRecipeTitle(), request.getRecipeContent()
-            );
-        }
-
-        if (exists) {
-            Optional<SavedRecipe> existingRecipe = (chatId != null) 
-                ? repository.findByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(
-                    userId, chatId, request.getRecipeTitle(), request.getRecipeContent())
-                : repository.findByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(
-                    userId, request.getRecipeTitle(), request.getRecipeContent()
-                );
-            
-            if (existingRecipe.isPresent()) {
-                return toResponse(existingRecipe.get());
-            }
+        Optional<SavedRecipe> existingRecipe = (chatId != null) 
+            ? repository.findByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(
+                userId, chatId, request.getRecipeTitle(), request.getRecipeContent())
+            : repository.findByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(
+                userId, request.getRecipeTitle(), request.getRecipeContent());
+        
+        if (existingRecipe.isPresent()) {
+            return toResponse(existingRecipe.get());
         }
 
         SavedRecipe sr = new SavedRecipe();

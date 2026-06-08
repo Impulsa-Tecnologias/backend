@@ -11,9 +11,6 @@ public interface SavedRecipeRepository extends JpaRepository<SavedRecipe, Long>{
 
     List<SavedRecipe> findByUserIdOrderByCreatedAtDesc(Long userId);
 
-    boolean existsByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(Long userId, Long chatId, String title, String content);
-    boolean existsByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(Long userId, String title, String content);
-
     Optional<SavedRecipe> findByUser_IdAndChat_IdAndRecipeTitleAndRecipeContent(Long userId, Long chatId, String title, String content);
     Optional<SavedRecipe> findByUser_IdAndChat_IsNullAndRecipeTitleAndRecipeContent(Long userId, String title, String content);
     

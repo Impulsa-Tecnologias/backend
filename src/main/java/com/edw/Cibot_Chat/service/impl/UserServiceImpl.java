@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.edw.Cibot_Chat.dto.request.CreateUserRequest;
 import com.edw.Cibot_Chat.dto.request.RegisterRequest;
+import com.edw.Cibot_Chat.dto.request.UpdatePasswordRequest;
 import com.edw.Cibot_Chat.dto.request.UpdateUserRequest;
 import com.edw.Cibot_Chat.dto.response.UserResponse;
 import com.edw.Cibot_Chat.entity.User;
@@ -95,6 +96,22 @@ public class UserServiceImpl implements UserService{
         }
 
         return toResponse(repository.save(us));
+    }
+
+    @Override
+    @Transactional
+    public void updatePassword(String email, UpdatePasswordRequest request) {
+        User user = repository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contraseña actual es incorrecta.");
+        }
+
+        String hashedNewPassword = passwordEncoder.encode(request.getNewPassword());
+
+        user.setPassword(hashedNewPassword);
+        repository.save(user);
     }
 
     @Override

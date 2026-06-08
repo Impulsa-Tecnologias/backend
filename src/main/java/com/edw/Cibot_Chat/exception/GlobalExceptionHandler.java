@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handlerNotFound(ResourceNotFoundException ex, HttpServletRequest req ){
         ApiError body = new ApiError("NOT_FOUND", ex.getMessage(), Instant.now(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest req){
+        ApiError body = new ApiError(
+            "AUTH_ERROR", 
+            "El correo o la contraseña son incorrectos.", 
+            Instant.now(), 
+            req.getRequestURI()
+        );
+        
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -76,4 +76,4 @@ El servidor web se iniciará por defecto en el puerto `8082` (puedes configurarl
 ## 📖 Documentación de la API (Swagger)
 Una vez que el backend esté corriendo, puedes acceder a la interfaz interactiva de Swagger para probar los endpoints de usuarios, mensajería y recetas ingresando a:
 
-Swagger UI:`http://localhost:8080/swagger-ui/index.html`
+Swagger UI:`http://localhost:8082/swagger-ui/index.html`

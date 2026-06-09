@@ -50,6 +50,7 @@ public class SecurityConfig {
                 
                 // Excepción para Usuarios Finales
                 .requestMatchers(HttpMethod.PUT, "/api/v1/users/profile").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/v1/users/password").authenticated()
                 
                 // Restricciones de Gestión
                 .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "MASTER")

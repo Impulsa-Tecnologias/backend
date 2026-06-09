@@ -1,6 +1,8 @@
 package com.edw.Cibot_Chat.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.edw.Cibot_Chat.dto.request.CreateUserRequest;
+import com.edw.Cibot_Chat.dto.request.UpdatePasswordRequest;
 import com.edw.Cibot_Chat.dto.request.UpdateUserRequest;
 import com.edw.Cibot_Chat.dto.response.UserResponse;
 import com.edw.Cibot_Chat.entity.User;
@@ -40,6 +43,20 @@ public class UserController {
             @AuthenticationPrincipal User actor) { // Spring Security inyecta al usuario dueño del Token
         
         return ResponseEntity.ok(userService.updateMyProfile(actor.getEmail(), request));
+    }
+
+    // PUT /api/v1/users/password
+    @PutMapping("/password")
+    public ResponseEntity<Map<String, String>> updatePassword(
+            @Valid @RequestBody UpdatePasswordRequest request,
+            @AuthenticationPrincipal User actor) {
+                
+        userService.updatePassword(actor.getEmail(), request);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Contraseña actualizada correctamente");
+        
+        return ResponseEntity.ok(response);
     }
 
     // GET /api/v1/users

@@ -20,7 +20,7 @@ public class CreateUserRequest {
     private String email;
 
     @NotBlank(message = "password is requerid")
-    @Size(max = 255, message = "password must be <= 255")
+    @Size(max = 255, min = 6, message = "password must be between 6 and 255 characters")
     private String password;
 
     @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ,]+$", message = "Allergies can only contain letters")

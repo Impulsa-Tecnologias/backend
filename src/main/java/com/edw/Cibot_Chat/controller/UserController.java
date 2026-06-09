@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<Map<String, String>> updatePassword(
             @Valid @RequestBody UpdatePasswordRequest request,
             @AuthenticationPrincipal User actor) {
-        
+                
         userService.updatePassword(actor.getEmail(), request);
         
         Map<String, String> response = new HashMap<>();

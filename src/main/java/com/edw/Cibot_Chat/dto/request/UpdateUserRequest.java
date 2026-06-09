@@ -15,7 +15,7 @@ public class UpdateUserRequest {
     @Size(max = 255, message = "password must be <= 255")
     private String password;
 
-    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$", message = "Allergies can only contain letters")
+    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ,]+$", message = "Allergies can only contain letters")
     private String allergy;
     private KitchenLevel kitchenLevel;
     
